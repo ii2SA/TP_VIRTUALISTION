@@ -1,0 +1,1 @@
+stocker respectivement, les fichiers kubernetes

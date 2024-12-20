@@ -1,0 +1,1 @@
+Le fichier application/README.md contiendra également les commandes nécéssaires pour contruire les images de conteneur du projet ainsi que celles pour en pousser une version dans Google Artifact Registry.

@@ -1,18 +1,18 @@
-resource "scaleway_k8s_cluster" "k8s" {
-  name         = "k8s-cluster-${var.env}"
-  version      = "1.26"
-  cni          = "cilium"
-  region       = var.region
-  tags         = ["${var.env}", "k8s"]
+resource "scaleway_k8s_cluster" "cluster" {
+  name                        = "calculatrice-cluster"
+  project_id                  = var.project_id
+  version                     = "1.29.1"
+  cni                         = "cilium"
+  region                      = var.region
+  tags                        = ["calculatrice-cloud-native"]
+  delete_additional_resources = false
+}
 
-  pool {
-    name     = "default-pool"
-    size     = 3
-    node_type = "DEV1-M"
-    autoscaler {
-      enable      = true
-      min_size    = 1
-      max_size    = 5
-    }
-  }
+resource "scaleway_k8s_pool" "default_pool" {
+  cluster_id  = scaleway_k8s_cluster.cluster.id
+  name        = "calculatrice-default-pool"
+  size        = 3
+  node_type   = "DEV1-M"
+  autohealing = true
+  region      = var.region
 }

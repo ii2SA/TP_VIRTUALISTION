@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend-replicaset
+  namespace: itong-noufename
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-container
+          image: your-frontend-image:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "4m"
+              memory: "32Mi"
+          env:
+            - name: BACKEND_URL
+              value: "http://backend-service:8080"  # URL du backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: itong-noufename
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

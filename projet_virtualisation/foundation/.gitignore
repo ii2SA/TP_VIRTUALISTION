@@ -1,12 +1,3 @@
-# Ignorer le fichier terraform.tfvars qui contient des informations sensibles
-terraform.tfvars
-
-# Ignorer les fichiers de state Terraform (qui peuvent aussi contenir des informations sensibles)
-*.tfstate
-*.tfstate.backup
-
 # Ignorer le dossier .terraform (dossier qui contient les plugins et autres fichiers temporaires)
 .terraform/
 
-# Ignorer le fichier de variables sensibles (si tu en crées un pour des raisons de sécurité)
-*.tfvars

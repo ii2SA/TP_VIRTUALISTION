@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculatrice</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .calculatrice {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+        }
+        #ecran {
+            width: 100%;
+            height: 60px;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            text-align: right;
+            padding: 10px;
+            font-size: 28px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .boutons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 20px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        button.operateur {
+            background-color: #ff9500;
+        }
+        button.operateur:hover {
+            background-color: #ffaa33;
+        }
+        button.egale {
+            background-color: #34c759;
+            grid-column: 4;
+            grid-row: span 2;
+        }
+        button.egale:hover {
+            background-color: #30d158;
+        }
+        button.effacer {
+            background-color: #ff3b30;
+            grid-column: span 2;
+        }
+        button.effacer:hover {
+            background-color: #ff5a50;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculatrice">
+        <input type="text" id="ecran" disabled>
+        <div class="boutons">
+            <button onclick="ajouterChiffre('7')">7</button>
+            <button onclick="ajouterChiffre('8')">8</button>
+            <button onclick="ajouterChiffre('9')">9</button>
+            <button class="operateur" onclick="ajouterOperateur('/')">/</button>
+
+            <button onclick="ajouterChiffre('4')">4</button>
+            <button onclick="ajouterChiffre('5')">5</button>
+            <button onclick="ajouterChiffre('6')">6</button>
+            <button class="operateur" onclick="ajouterOperateur('*')">*</button>
+
+            <button onclick="ajouterChiffre('1')">1</button>
+            <button onclick="ajouterChiffre('2')">2</button>
+            <button onclick="ajouterChiffre('3')">3</button>
+            <button class="operateur" onclick="ajouterOperateur('-')">-</button>
+
+            <button onclick="ajouterChiffre('0')" style="grid-column: span 2;">0</button>
+            <button onclick="ajouterChiffre('.')">.</button>
+            <button class="operateur" onclick="ajouterOperateur('+')">+</button>
+
+            <button class="effacer" onclick="effacer()">C</button>
+            <button class="egale" onclick="calculer()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let ecran = document.getElementById('ecran');
+        let expression = '';
+
+        function ajouterChiffre(chiffre) {
+            expression += chiffre;
+            ecran.value = expression;
+        }
+
+        function ajouterOperateur(operateur) {
+            expression += operateur;
+            ecran.value = expression;
+        }
+
+        function calculer() {
+            // Vérifier si l'expression est valide avant de l'envoyer
+            if (!expression || /[\+\-\*\/]$/.test(expression)) {
+                ecran.value = 'Erreur';
+                return;
+            }
+        
+            fetch('http://localhost:3000/calculer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ expression })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.erreur) {
+                    ecran.value = 'Erreur';
+                } else {
+                    ecran.value = data.resultat;
+                    expression = data.resultat.toString();
+                }
+            })
+            .catch(error => {
+                ecran.value = 'Erreur';
+                console.error(error);
+            });
+        }
+        
+    </script>
+</body>
+</html>

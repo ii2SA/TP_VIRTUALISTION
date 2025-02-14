@@ -5,20 +5,25 @@ import time
 from flask import Flask, request, jsonify
 import pika
 import redis
+import os
 
 app = Flask(__name__)
 
 # Configuration des connexions
-RABBITMQ_HOST = 'localhost'
+RABBITMQ_HOST = 'rabbitmq'
 RABBITMQ_QUEUE = 'calculations'
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'redis'
 REDIS_PORT = 6379
-
+redis_host = os.getenv("REDIS_HOST", "redis")
+rabbitmq_host = os.getenv("RABBITMQ_HOST", "rabbitmq")
 # Connexion à Redis
-r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+r = redis.Redis(host=redis_host, port=REDIS_PORT, db=0)
 
 # Connexion à RabbitMQ
-rabbit_connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
+rabbit_connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host=rabbitmq_host)  # 5672 est le port par défaut pour RabbitMQ
+)
+
 channel = rabbit_connection.channel()
 channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
 

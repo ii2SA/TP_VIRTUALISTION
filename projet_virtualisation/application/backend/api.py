@@ -5,6 +5,7 @@ import time
 from flask import Flask, request, jsonify
 import pika
 import redis
+import os
 
 app = Flask(__name__)
 
@@ -15,11 +16,13 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
 # Connexion à Redis
-r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+redis_host = os.getenv("REDIS_HOST", "redis")
+r = redis.Redis(host=redis_host, port=REDIS_PORT, db=0)
 
 # Connexion à RabbitMQ
-rabbit_connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
-channel = rabbit_connection.channel()
+rabbitmq_host = os.getenv("RABBITMQ_HOST", "rabbitmq")
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+channel = connection.channel()
 channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
 
 @app.route('/api/calc', methods=['POST'])

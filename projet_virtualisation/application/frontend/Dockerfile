@@ -1,5 +1,10 @@
-# Utilise une image de base légère pour servir des fichiers statiques
 FROM nginx:alpine
+
+# Supprimer les fichiers par défaut
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copie la configuration Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copie le contenu du dossier (HTML, CSS, JS) dans le répertoire Nginx
 COPY . /usr/share/nginx/html
@@ -7,4 +12,4 @@ COPY . /usr/share/nginx/html
 # Expose le port 80 (celui utilisé par Nginx)
 EXPOSE 80
 
-# La commande de démarrage est déjà définie dans l'image Nginx, donc aucun CMD supplémentaire n'est nécessaire
+CMD ["nginx", "-g", "daemon off;"]

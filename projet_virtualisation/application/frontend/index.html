@@ -133,7 +133,7 @@
       ecran.value = 'Calcul en cours...';
 
       // Envoie de la requête POST vers l'API backend
-      fetch('http://localhost:5000/api/calc', {  // Assure-toi que l'URL correspond à ton API
+      fetch('http://localhost:8080/api/calc', {  // Assure-toi que l'URL correspond à ton API
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ expression: expression })
